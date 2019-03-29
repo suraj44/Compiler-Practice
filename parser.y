@@ -1,12 +1,14 @@
 %{
 	#include "lex.yy.c"
 
-	void yyerror(char *s) {
-		fprintf(stderr, "%s\n", s);
+	void yyerror(const char *s) {
+		fprintf(stderr, "%d: %s\n", yylineno,s);
 		exit(1);
 	}
 %}
 
+%define parse.lac full
+%define parse.error verbose
 
 %union {
 	char *str;
@@ -19,9 +21,64 @@
 %token <str> INCREMENT DECREMENT PLUSEQ
 %token <str> IDENTIFIER
 
+%left '='
+%left '<' '>'
+%left '+' '-'
+%left '/' '*' '%'
+%left INCREMENT DECREMENT
+
 %%
-start:
-	PREPROCESS|MULTI_LINE|IDENTIFIER;
+start
+	: PREPROCESS start
+	| FuncDef start
+	| FuncDec start
+	| VarDec ';' start
+	| SINGLE_LINE start
+	| MULTI_LINE start
+	| ;
+
+FuncDec
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis ';'
+
+OpenParanthesis
+	: '(' ;
+
+CloseParanthesis
+	: ')' ;
+
+ParamList
+	: DataType IDENTIFIER ',' ParamList
+	| DataType IDENTIFIER 
+	;
+
+VarDec
+	: DataType VarList ;
+
+VarList
+	: IDENTIFIER
+	| IDENTIFIER ',' VarList
+	| IDENTIFIER '[' INTEGER_CONSTANT ']'
+	| IDENTIFIER '[' INTEGER_CONSTANT ']' ',' ParamList ;
+
+FuncDef
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement ;
+
+BlockStatement
+	: '{' StatList '}' ;
+
+StatList
+	: SingleStatement StatList
+	| BlockStatement StatList
+	| ;
+
+SingleStatement
+	: VarDec ';' 
+	| ';'
+
+DataType
+	: INT 
+	| CHAR
+	| VOID;
 
 %%
 
