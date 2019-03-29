@@ -57,8 +57,9 @@ VarDec
 VarList
 	: IDENTIFIER
 	| IDENTIFIER ',' VarList
-	| IDENTIFIER '[' INTEGER_CONSTANT ']'
-	| IDENTIFIER '[' INTEGER_CONSTANT ']' ',' ParamList ;
+	| IDENTIFIER '[' ConstExpression ']'
+	| IDENTIFIER '[' ConstExpression ']' ',' ParamList 
+	| IDENTIFIER '=' Expression
 
 FuncDef
 	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement ;
@@ -73,12 +74,43 @@ StatList
 
 SingleStatement
 	: VarDec ';' 
+	| Expression ';'
 	| ';'
 
 DataType
 	: INT 
 	| CHAR
 	| VOID;
+
+
+ConstExpression
+	: INTEGER_CONSTANT
+	| ConstExpression '>' ConstExpression
+	| ConstExpression '<' ConstExpression
+	| ConstExpression '-' ConstExpression
+	| ConstExpression '+' ConstExpression
+	| ConstExpression '*' ConstExpression
+	| ConstExpression '/' ConstExpression
+	| ConstExpression '%' ConstExpression
+
+Expression 
+	: Term
+	| Expression '>' Expression
+	| Expression '<' Expression
+	| Expression '-' Expression
+	| Expression '+' Expression
+	| Expression '*' Expression
+	| Expression '/' Expression
+	| Expression '%' Expression
+
+Term
+	: IDENTIFIER
+	| INTEGER_CONSTANT
+	| FLOAT_CONSTANT
+	| IDENTIFIER INCREMENT
+	| IDENTIFIER DECREMENT
+	| INCREMENT IDENTIFIER
+	| DECREMENT IDENTIFIER
 
 %%
 
