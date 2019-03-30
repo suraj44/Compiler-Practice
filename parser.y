@@ -1,5 +1,4 @@
 %{
-	#include "lex.yy.c"
 	#include "symbol_table.c"
 	void yyerror(const char *s) {
 		fprintf(stderr, "%d: %s\n", yylineno,s);
@@ -29,6 +28,9 @@
 %left '/' '*' '%'
 %left INCREMENT DECREMENT
 
+
+%type <intval> ParamList ArgList
+
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -43,36 +45,38 @@ start
 	| ;
 
 FuncDec
-	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis ';' {insert($2, type);}
-	| DataType IDENTIFIER OpenParanthesis CloseParanthesis ';'           {insert($2, type);}
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis ';' { redeclared($2); node *temp = insert($2, type, curr_scope); temp->num_params = $4;}
+	| DataType IDENTIFIER OpenParanthesis CloseParanthesis ';'           { redeclared($2); node* temp = insert($2, type, curr_scope); temp->num_params = 0;}
 
 OpenParanthesis
-	: '(' ;
+	: '(' {curr_scope++;}
 
 CloseParanthesis
-	: ')' ;
+	: ')' {curr_scope--;}
 
 ParamList
-	: DataType IDENTIFIER ',' ParamList
-	| DataType IDENTIFIER 
+	: DataType IDENTIFIER ',' ParamList { $$ = $4 + 1;redeclared($2); insert($2, type, curr_scope);}
+	| DataType IDENTIFIER               { $$ =1 ;redeclared($2); insert($2, type, curr_scope);}
 	;
 
 VarDec
 	: DataType VarList ;
 
 VarList
-	: IDENTIFIER                                       {insert($1, type);}
-	| IDENTIFIER ',' VarList                           {insert($1, type);}
-	| IDENTIFIER '[' ConstExpression ']'               {insert($1, type);}
-	| IDENTIFIER '[' ConstExpression ']' ',' ParamList {insert($1, type);}
-	| IDENTIFIER '=' Expression                        {insert($1, type);}
+	: IDENTIFIER                                       {redeclared($1); insert($1, type, curr_scope);}
+	| IDENTIFIER ',' VarList                           {redeclared($1); insert($1, type, curr_scope);}
+	| IDENTIFIER '[' ConstExpression ']'               {redeclared($1); insert($1, type, curr_scope);}
+	| IDENTIFIER '[' ConstExpression ']' ',' ParamList {redeclared($1); insert($1, type, curr_scope);}
+	| IDENTIFIER '=' Expression                        {redeclared($1); insert($1, type, curr_scope);}
 
 FuncDef
-	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement {insert($2, type);}
-	| DataType IDENTIFIER OpenParanthesis CloseParanthesis BlockStatement           {insert($2, type);}
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis {redeclared($2); node* temp = insert($2, type, curr_scope); temp->num_params = $4;} BlockStatement 
+	| DataType IDENTIFIER OpenParanthesis CloseParanthesis {redeclared($2); node* temp = insert($2, type, curr_scope); temp->num_params = 0;} BlockStatement
 
 BlockStatement
-	: '{' StatList '}' ;
+	: '{' {curr_scope++;}
+	 StatList 
+	  '}' {curr_scope--;}
 
 StatList
 	: SingleStatement StatList
@@ -94,12 +98,12 @@ DataType
 	| VOID {strcpy(type, $1);}
 
 FunCall
-	: IDENTIFIER '(' ArgList ')'
-	| IDENTIFIER '(' ')'
+	: IDENTIFIER '(' ArgList ')'  {undeclared($1); not_function($1); num_params_check($1, $3);}
+	| IDENTIFIER '(' ')'          {undeclared($1); not_function($1); num_params_check($1, 0);}
 
 ArgList
-	: Expression ',' ArgList
-	| Expression
+	: Expression ',' ArgList {$$ = $3 + 1;} 
+	| Expression             {$$ = 1;}
 
 ReturnStat
 	: RETURN Expression
@@ -125,13 +129,13 @@ Expression
 	| Expression '%' Expression
 
 Term
-	: IDENTIFIER
+	: IDENTIFIER            {undeclared($1);}
 	| INTEGER_CONSTANT
 	| FLOAT_CONSTANT
-	| IDENTIFIER INCREMENT
-	| IDENTIFIER DECREMENT
-	| INCREMENT IDENTIFIER
-	| DECREMENT IDENTIFIER
+	| IDENTIFIER INCREMENT  {undeclared($1);}
+	| IDENTIFIER DECREMENT  {undeclared($1);}
+	| INCREMENT IDENTIFIER  {undeclared($2);}
+	| DECREMENT IDENTIFIER  {undeclared($2);}
 	| FunCall
 	| IDENTIFIER '[' ConstExpression ']'
 
@@ -162,3 +166,11 @@ int main() {
 	printSymbolTable();
 	return 0;
 }
+
+/*
+** Added scopes to symbol table
+** Undeclared variable check
+** Reclared variable check
+** Is a function check
+** Check if function call params match func definition
+*/
