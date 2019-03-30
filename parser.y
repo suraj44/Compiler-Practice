@@ -27,6 +27,9 @@
 %left '/' '*' '%'
 %left INCREMENT DECREMENT
 
+%nonassoc IFX
+%nonassoc ELSE
+
 %%
 start
 	: PREPROCESS start
@@ -39,6 +42,7 @@ start
 
 FuncDec
 	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis ';'
+	| DataType IDENTIFIER OpenParanthesis CloseParanthesis ';'
 
 OpenParanthesis
 	: '(' ;
@@ -62,7 +66,8 @@ VarList
 	| IDENTIFIER '=' Expression
 
 FuncDef
-	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement ;
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement 
+	| DataType IDENTIFIER OpenParanthesis CloseParanthesis BlockStatement
 
 BlockStatement
 	: '{' StatList '}' ;
@@ -74,7 +79,11 @@ StatList
 
 SingleStatement
 	: VarDec ';' 
+	| IfStat
 	| Expression ';'
+	| WhileStat
+	| ForStat
+	| ReturnStat ';'
 	| ';'
 
 DataType
@@ -82,7 +91,17 @@ DataType
 	| CHAR
 	| VOID;
 
+FunCall
+	: IDENTIFIER '(' ArgList ')'
+	| IDENTIFIER '(' ')'
 
+ArgList
+	: Expression ',' ArgList
+	| Expression
+
+ReturnStat
+	: RETURN Expression
+	| RETURN
 ConstExpression
 	: INTEGER_CONSTANT
 	| ConstExpression '>' ConstExpression
@@ -111,7 +130,27 @@ Term
 	| IDENTIFIER DECREMENT
 	| INCREMENT IDENTIFIER
 	| DECREMENT IDENTIFIER
+	| FunCall
+	| IDENTIFIER '[' ConstExpression ']'
 
+IfStat
+	: IF '(' Expression ')' SingleStatement %prec IFX
+	| IF '(' Expression ')' BlockStatement  %prec IFX
+	| IF '(' Expression ')' SingleStatement ELSE SingleStatement %prec ELSE
+	| IF '(' Expression ')' SingleStatement ELSE BlockStatement %prec ELSE
+	| IF '(' Expression ')' BlockStatement ELSE SingleStatement %prec ELSE
+	| IF '(' Expression ')' BlockStatement ELSE BlockStatement %prec ELSE
+
+WhileStat
+	: WHILE '(' Expression ')' SingleStatement
+	| WHILE '(' Expression ')' BlockStatement
+
+
+ForStat
+	: FOR '(' VarDec ';' Expression ';' Expression ')' SingleStatement
+	| FOR '(' VarDec ';' Expression ';' Expression ')' BlockStatement
+	| FOR '(' Expression ';' Expression ';' Expression ')' SingleStatement
+	| FOR '(' Expression ';' Expression ';' Expression ')' BlockStatement
 %%
 
 int main() {
