@@ -1,10 +1,12 @@
 %{
 	#include "lex.yy.c"
-
+	#include "symbol_table.c"
 	void yyerror(const char *s) {
 		fprintf(stderr, "%d: %s\n", yylineno,s);
 		exit(1);
 	}
+
+	char type[100];
 %}
 
 %define parse.lac full
@@ -41,8 +43,8 @@ start
 	| ;
 
 FuncDec
-	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis ';'
-	| DataType IDENTIFIER OpenParanthesis CloseParanthesis ';'
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis ';' {insert($2, type);}
+	| DataType IDENTIFIER OpenParanthesis CloseParanthesis ';'           {insert($2, type);}
 
 OpenParanthesis
 	: '(' ;
@@ -59,15 +61,15 @@ VarDec
 	: DataType VarList ;
 
 VarList
-	: IDENTIFIER
-	| IDENTIFIER ',' VarList
-	| IDENTIFIER '[' ConstExpression ']'
-	| IDENTIFIER '[' ConstExpression ']' ',' ParamList 
-	| IDENTIFIER '=' Expression
+	: IDENTIFIER                                       {insert($1, type);}
+	| IDENTIFIER ',' VarList                           {insert($1, type);}
+	| IDENTIFIER '[' ConstExpression ']'               {insert($1, type);}
+	| IDENTIFIER '[' ConstExpression ']' ',' ParamList {insert($1, type);}
+	| IDENTIFIER '=' Expression                        {insert($1, type);}
 
 FuncDef
-	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement 
-	| DataType IDENTIFIER OpenParanthesis CloseParanthesis BlockStatement
+	: DataType IDENTIFIER OpenParanthesis ParamList CloseParanthesis BlockStatement {insert($2, type);}
+	| DataType IDENTIFIER OpenParanthesis CloseParanthesis BlockStatement           {insert($2, type);}
 
 BlockStatement
 	: '{' StatList '}' ;
@@ -87,9 +89,9 @@ SingleStatement
 	| ';'
 
 DataType
-	: INT 
-	| CHAR
-	| VOID;
+	: INT  {strcpy(type, $1);}
+	| CHAR {strcpy(type, $1);}
+	| VOID {strcpy(type, $1);}
 
 FunCall
 	: IDENTIFIER '(' ArgList ')'
@@ -157,5 +159,6 @@ int main() {
 
 	yyparse();
 	printf("PARSING COMPLETE\n");
+	printSymbolTable();
 	return 0;
 }

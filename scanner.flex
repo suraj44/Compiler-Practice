@@ -68,7 +68,7 @@ alphanum [{alpha}|{number}]
 "+=" {return PLUSEQ;}
 
 (_|{alpha})(_|{alpha}|{number})* {
-	printf("IDENTIFIER\n");
+	yylval.str = (char*)malloc(100*sizeof(char)); strcpy(yylval.str, yytext);
 	return IDENTIFIER;
 }
 
