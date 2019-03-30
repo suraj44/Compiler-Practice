@@ -6,6 +6,7 @@
 	}
 
 	char type[100];
+	char ret[100] = "";
 %}
 
 %define parse.lac full
@@ -28,8 +29,9 @@
 %left '/' '*' '%'
 %left INCREMENT DECREMENT
 
-
+%type <str> DataType
 %type <intval> ParamList ArgList
+%type <intval> ConstExpression
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -65,8 +67,8 @@ VarDec
 VarList
 	: IDENTIFIER                                       {redeclared($1); insert($1, type, curr_scope);}
 	| IDENTIFIER ',' VarList                           {redeclared($1); insert($1, type, curr_scope);}
-	| IDENTIFIER '[' ConstExpression ']'               {redeclared($1); insert($1, type, curr_scope);}
-	| IDENTIFIER '[' ConstExpression ']' ',' ParamList {redeclared($1); insert($1, type, curr_scope);}
+	| IDENTIFIER '[' ConstExpression ']'               {redeclared($1); node *temp = insert($1, type, curr_scope); non_negative_size($3); temp->arr_dim = $3;}
+	| IDENTIFIER '[' ConstExpression ']' ',' ParamList {redeclared($1); node *temp = insert($1, type, curr_scope); non_negative_size($3); temp->arr_dim = $3;}
 	| IDENTIFIER '=' Expression                        {redeclared($1); insert($1, type, curr_scope);}
 
 FuncDef
@@ -93,9 +95,9 @@ SingleStatement
 	| ';'
 
 DataType
-	: INT  {strcpy(type, $1);}
-	| CHAR {strcpy(type, $1);}
-	| VOID {strcpy(type, $1);}
+	: INT  {$$ = $1; strcpy(type, $1);}
+	| CHAR {$$ = $1; strcpy(type, $1);}
+	| VOID {$$ = $1; strcpy(type, $1);}
 
 FunCall
 	: IDENTIFIER '(' ArgList ')'  {undeclared($1); not_function($1); num_params_check($1, $3);}
@@ -109,14 +111,14 @@ ReturnStat
 	: RETURN Expression
 	| RETURN
 ConstExpression
-	: INTEGER_CONSTANT
-	| ConstExpression '>' ConstExpression
-	| ConstExpression '<' ConstExpression
-	| ConstExpression '-' ConstExpression
-	| ConstExpression '+' ConstExpression
-	| ConstExpression '*' ConstExpression
-	| ConstExpression '/' ConstExpression
-	| ConstExpression '%' ConstExpression
+	: INTEGER_CONSTANT                    {$$ = atoi($1);}
+	| ConstExpression '>' ConstExpression {$$ = $1 > $3;}
+	| ConstExpression '<' ConstExpression {$$ = $1 < $3;}
+	| ConstExpression '-' ConstExpression {$$ = $1 - $3;}
+	| ConstExpression '+' ConstExpression {$$ = $1 + $3;}
+	| ConstExpression '*' ConstExpression {$$ = $1 * $3;}
+	| ConstExpression '/' ConstExpression {$$ = $1 / $3;}
+	| ConstExpression '%' ConstExpression {$$ = $1 % $3;}
 
 Expression 
 	: Term
@@ -137,7 +139,7 @@ Term
 	| INCREMENT IDENTIFIER  {undeclared($2);}
 	| DECREMENT IDENTIFIER  {undeclared($2);}
 	| FunCall
-	| IDENTIFIER '[' ConstExpression ']'
+	| IDENTIFIER '[' ConstExpression ']' { undeclared($1); non_negative_size($3); array_dim_check($1, $3); }
 
 IfStat
 	: IF '(' Expression ')' SingleStatement %prec IFX
@@ -172,5 +174,6 @@ int main() {
 ** Undeclared variable check
 ** Reclared variable check
 ** Is a function check
+** Array Dimension Check
 ** Check if function call params match func definition
 */

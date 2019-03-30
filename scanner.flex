@@ -36,7 +36,7 @@ alphanum [{alpha}|{number}]
 	return PREPROCESS;
 }
 
-({number})+ {
+[\-|\+]?({number})+ {
 	yylval.str = (char*)malloc(100*sizeof(char));
 	strcpy(yylval.str, yytext);
 	return INTEGER_CONSTANT;

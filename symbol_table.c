@@ -14,6 +14,7 @@ typedef struct Node {
 	struct Node * next;
 	int scope;
 	int num_params;
+	int arr_dim;
 } node;
 
 node * symbolTable[MOD] = {NULL};
@@ -53,6 +54,7 @@ node*  insert(const char *name, const char *type, int scope) {
 	strcpy(temp->type, type);
 	temp->scope = scope;
 	temp->num_params = -1;
+	temp->arr_dim = -1;
 
 	temp->next = symbolTable[hashVal];
 	symbolTable[hashVal] = temp;
@@ -113,18 +115,38 @@ void num_params_check(const char *str, int call_params) {
 	}
 }
 
+void non_negative_size(int size) {
+	if(size < 0) {
+		printf("Line %3d: Size of array cannot be negative\n", yylineno);
+		exit(1);
+	}
+}
+
+void array_dim_check(const char *str, int size) {
+	int ptr = tos;
+	while(ptr >=0) {
+		if(!strcmp(stack[ptr]->name, str)) {
+			if(size >= stack[ptr]->arr_dim) {
+				printf("Line %3d: Cannot access index %d out of declared range %d\n", yylineno, size, stack[ptr]->arr_dim); 
+				exit(1);
+			} 
+		}
+		ptr--;
+	}
+}
+
 
 
 void printSymbolTable() {
 
 	printf("----------------------------------------------------------------------------------------------------------\n");
-	printf("%15s %15s %15s %15s\n", "Data Type", "Symbol", "Scope", "Num Params");
+	printf("%15s %15s %15s %15s %15s\n", "Data Type", "Symbol", "Scope", "Num Params", "Array Dims");
 	printf("----------------------------------------------------------------------------------------------------------\n");
 
 	for(int i=0 ; i <MOD;i++) {
 		node* temp = symbolTable[i];
 		while(temp != NULL) {
-			printf("%15s %15s %15d %15d\n", temp->type, temp->name, temp->scope, temp->num_params);
+			printf("%15s %15s %15d %15d %15d\n", temp->type, temp->name, temp->scope, temp->num_params, temp->arr_dim);
 			temp = temp->next;
 		}
 	}
