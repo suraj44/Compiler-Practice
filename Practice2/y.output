@@ -1,0 +1,1918 @@
+Terminals unused in grammar
+
+   BREAK
+   CONTINUE
+
+
+Grammar
+
+    0 $accept: start $end
+
+    1 start: VarDec ';' start
+    2      | PREPROC start
+    3      | FunDec ';' start
+    4      | FunDef start
+    5      | %empty
+
+    6 VarDec: DataType DecList
+
+    7 DecList: IDENTIFIER
+    8        | IDENTIFIER ',' DecList
+    9        | IDENTIFIER '[' ConstExpr ']' ',' DecList
+   10        | IDENTIFIER '[' ConstExpr ']'
+   11        | IDENTIFIER '=' Expr ',' DecList
+   12        | IDENTIFIER '=' Expr
+
+   13 FunDec: DataType IDENTIFIER OpenPar ParamList ClosePar
+   14       | DataType IDENTIFIER '(' ')'
+
+   15 FunDef: DataType IDENTIFIER OpenPar ParamList ClosePar BlockStat
+   16       | DataType IDENTIFIER '(' ')' BlockStat
+
+   17 OpenPar: '('
+
+   18 ClosePar: ')'
+
+   19 ParamList: DataType IDENTIFIER
+   20          | DataType IDENTIFIER ',' ParamList
+
+   21 $@1: %empty
+
+   22 BlockStat: '{' $@1 StatList '}'
+
+   23 StatList: SingleStat StatList
+   24         | BlockStat StatList
+   25         | %empty
+
+   26 SingleStat: ';'
+   27           | VarDec ';'
+   28           | RETURN ';'
+   29           | Expr ';'
+   30           | Assign ';'
+   31           | IfStat
+   32           | ForStat
+   33           | WhileStat
+
+   34 Expr: Term
+   35     | Expr '+' Expr
+   36     | Expr '-' Expr
+   37     | Expr '/' Expr
+   38     | Expr '*' Expr
+   39     | Expr '%' Expr
+   40     | Expr '<' Expr
+   41     | Expr '>' Expr
+
+   42 Term: IDENTIFIER
+   43     | INCREMENT IDENTIFIER
+   44     | DECREMENT IDENTIFIER
+   45     | IDENTIFIER INCREMENT
+   46     | IDENTIFIER DECREMENT
+   47     | INTEGER_CONSTANT
+   48     | IDENTIFIER '[' ConstExpr ']'
+   49     | STRING_CONSTANT
+   50     | FunCall
+
+   51 DataType: VOID
+   52         | FLOAT
+   53         | INT
+   54         | CHAR
+
+   55 ConstExpr: INTEGER_CONSTANT
+   56          | ConstExpr '+' ConstExpr
+   57          | ConstExpr '-' ConstExpr
+   58          | ConstExpr '/' ConstExpr
+   59          | ConstExpr '*' ConstExpr
+   60          | ConstExpr '%' ConstExpr
+
+   61 Assign: Term '=' Expr
+
+   62 FunCall: IDENTIFIER '(' ArgList ')'
+   63        | IDENTIFIER '(' ')'
+
+   64 ArgList: Term ',' ArgList
+   65        | Term
+
+   66 IfStat: IF '(' Expr ')' BlockStat
+   67       | IF '(' Expr ')' SingleStat
+   68       | IF '(' Expr ')' BlockStat ELSE BlockStat
+
+   69 WhileStat: WHILE '(' Expr ')' BlockStat
+
+   70 ForStat: FOR '(' VarDec ';' Expr ';' Expr ')' BlockStat
+   71        | FOR '(' Expr ';' Expr ';' Expr ')' BlockStat
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37) 39 60
+'(' (40) 14 16 17 62 63 66 67 68 69 70 71
+')' (41) 14 16 18 62 63 66 67 68 69 70 71
+'*' (42) 38 59
+'+' (43) 35 56
+',' (44) 8 9 11 20 64
+'-' (45) 36 57
+'/' (47) 37 58
+';' (59) 1 3 26 27 28 29 30 70 71
+'<' (60) 40
+'=' (61) 11 12 61
+'>' (62) 41
+'[' (91) 9 10 48
+']' (93) 9 10 48
+'{' (123) 22
+'}' (125) 22
+error (256)
+WHILE (258) 69
+FOR (259) 70 71
+IF (260) 66 67 68
+ELSE (261) 68
+BREAK (262)
+CONTINUE (263)
+RETURN (264) 28
+CHAR (265) 54
+INT (266) 53
+VOID (267) 51
+FLOAT (268) 52
+INTEGER_CONSTANT (269) 47 55
+STRING_CONSTANT (270) 49
+PREPROC (271) 2
+INCREMENT (272) 43 45
+DECREMENT (273) 44 46
+IDENTIFIER (274) 7 8 9 10 11 12 13 14 15 16 19 20 42 43 44 45 46 48
+    62 63
+IFX (275)
+
+
+Nonterminals, with rules where they appear
+
+$accept (37)
+    on left: 0
+start (38)
+    on left: 1 2 3 4 5, on right: 0 1 2 3 4
+VarDec (39)
+    on left: 6, on right: 1 27 70
+DecList (40)
+    on left: 7 8 9 10 11 12, on right: 6 8 9 11
+FunDec (41)
+    on left: 13 14, on right: 3
+FunDef (42)
+    on left: 15 16, on right: 4
+OpenPar (43)
+    on left: 17, on right: 13 15
+ClosePar (44)
+    on left: 18, on right: 13 15
+ParamList (45)
+    on left: 19 20, on right: 13 15 20
+BlockStat (46)
+    on left: 22, on right: 15 16 24 66 68 69 70 71
+$@1 (47)
+    on left: 21, on right: 22
+StatList (48)
+    on left: 23 24 25, on right: 22 23 24
+SingleStat (49)
+    on left: 26 27 28 29 30 31 32 33, on right: 23 67
+Expr (50)
+    on left: 34 35 36 37 38 39 40 41, on right: 11 12 29 35 36 37 38
+    39 40 41 61 66 67 68 69 70 71
+Term (51)
+    on left: 42 43 44 45 46 47 48 49 50, on right: 34 61 64 65
+DataType (52)
+    on left: 51 52 53 54, on right: 6 13 14 15 16 19 20
+ConstExpr (53)
+    on left: 55 56 57 58 59 60, on right: 9 10 48 56 57 58 59 60
+Assign (54)
+    on left: 61, on right: 30
+FunCall (55)
+    on left: 62 63, on right: 50
+ArgList (56)
+    on left: 64 65, on right: 62 64
+IfStat (57)
+    on left: 66 67 68, on right: 31
+WhileStat (58)
+    on left: 69, on right: 33
+ForStat (59)
+    on left: 70 71, on right: 32
+
+
+State 0
+
+    0 $accept: . start $end
+
+    CHAR     shift, and go to state 1
+    INT      shift, and go to state 2
+    VOID     shift, and go to state 3
+    FLOAT    shift, and go to state 4
+    PREPROC  shift, and go to state 5
+
+    $default  reduce using rule 5 (start)
+
+    start     go to state 6
+    VarDec    go to state 7
+    FunDec    go to state 8
+    FunDef    go to state 9
+    DataType  go to state 10
+
+
+State 1
+
+   54 DataType: CHAR .
+
+    $default  reduce using rule 54 (DataType)
+
+
+State 2
+
+   53 DataType: INT .
+
+    $default  reduce using rule 53 (DataType)
+
+
+State 3
+
+   51 DataType: VOID .
+
+    $default  reduce using rule 51 (DataType)
+
+
+State 4
+
+   52 DataType: FLOAT .
+
+    $default  reduce using rule 52 (DataType)
+
+
+State 5
+
+    2 start: PREPROC . start
+
+    CHAR     shift, and go to state 1
+    INT      shift, and go to state 2
+    VOID     shift, and go to state 3
+    FLOAT    shift, and go to state 4
+    PREPROC  shift, and go to state 5
+
+    $default  reduce using rule 5 (start)
+
+    start     go to state 11
+    VarDec    go to state 7
+    FunDec    go to state 8
+    FunDef    go to state 9
+    DataType  go to state 10
+
+
+State 6
+
+    0 $accept: start . $end
+
+    $end  shift, and go to state 12
+
+
+State 7
+
+    1 start: VarDec . ';' start
+
+    ';'  shift, and go to state 13
+
+
+State 8
+
+    3 start: FunDec . ';' start
+
+    ';'  shift, and go to state 14
+
+
+State 9
+
+    4 start: FunDef . start
+
+    CHAR     shift, and go to state 1
+    INT      shift, and go to state 2
+    VOID     shift, and go to state 3
+    FLOAT    shift, and go to state 4
+    PREPROC  shift, and go to state 5
+
+    $default  reduce using rule 5 (start)
+
+    start     go to state 15
+    VarDec    go to state 7
+    FunDec    go to state 8
+    FunDef    go to state 9
+    DataType  go to state 10
+
+
+State 10
+
+    6 VarDec: DataType . DecList
+   13 FunDec: DataType . IDENTIFIER OpenPar ParamList ClosePar
+   14       | DataType . IDENTIFIER '(' ')'
+   15 FunDef: DataType . IDENTIFIER OpenPar ParamList ClosePar BlockStat
+   16       | DataType . IDENTIFIER '(' ')' BlockStat
+
+    IDENTIFIER  shift, and go to state 16
+
+    DecList  go to state 17
+
+
+State 11
+
+    2 start: PREPROC start .
+
+    $default  reduce using rule 2 (start)
+
+
+State 12
+
+    0 $accept: start $end .
+
+    $default  accept
+
+
+State 13
+
+    1 start: VarDec ';' . start
+
+    CHAR     shift, and go to state 1
+    INT      shift, and go to state 2
+    VOID     shift, and go to state 3
+    FLOAT    shift, and go to state 4
+    PREPROC  shift, and go to state 5
+
+    $default  reduce using rule 5 (start)
+
+    start     go to state 18
+    VarDec    go to state 7
+    FunDec    go to state 8
+    FunDef    go to state 9
+    DataType  go to state 10
+
+
+State 14
+
+    3 start: FunDec ';' . start
+
+    CHAR     shift, and go to state 1
+    INT      shift, and go to state 2
+    VOID     shift, and go to state 3
+    FLOAT    shift, and go to state 4
+    PREPROC  shift, and go to state 5
+
+    $default  reduce using rule 5 (start)
+
+    start     go to state 19
+    VarDec    go to state 7
+    FunDec    go to state 8
+    FunDef    go to state 9
+    DataType  go to state 10
+
+
+State 15
+
+    4 start: FunDef start .
+
+    $default  reduce using rule 4 (start)
+
+
+State 16
+
+    7 DecList: IDENTIFIER .
+    8        | IDENTIFIER . ',' DecList
+    9        | IDENTIFIER . '[' ConstExpr ']' ',' DecList
+   10        | IDENTIFIER . '[' ConstExpr ']'
+   11        | IDENTIFIER . '=' Expr ',' DecList
+   12        | IDENTIFIER . '=' Expr
+   13 FunDec: DataType IDENTIFIER . OpenPar ParamList ClosePar
+   14       | DataType IDENTIFIER . '(' ')'
+   15 FunDef: DataType IDENTIFIER . OpenPar ParamList ClosePar BlockStat
+   16       | DataType IDENTIFIER . '(' ')' BlockStat
+
+    '='  shift, and go to state 20
+    ','  shift, and go to state 21
+    '['  shift, and go to state 22
+    '('  shift, and go to state 23
+
+    $default  reduce using rule 7 (DecList)
+
+    OpenPar  go to state 24
+
+
+State 17
+
+    6 VarDec: DataType DecList .
+
+    $default  reduce using rule 6 (VarDec)
+
+
+State 18
+
+    1 start: VarDec ';' start .
+
+    $default  reduce using rule 1 (start)
+
+
+State 19
+
+    3 start: FunDec ';' start .
+
+    $default  reduce using rule 3 (start)
+
+
+State 20
+
+   11 DecList: IDENTIFIER '=' . Expr ',' DecList
+   12        | IDENTIFIER '=' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 30
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 21
+
+    8 DecList: IDENTIFIER ',' . DecList
+
+    IDENTIFIER  shift, and go to state 33
+
+    DecList  go to state 34
+
+
+State 22
+
+    9 DecList: IDENTIFIER '[' . ConstExpr ']' ',' DecList
+   10        | IDENTIFIER '[' . ConstExpr ']'
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 36
+
+
+State 23
+
+   14 FunDec: DataType IDENTIFIER '(' . ')'
+   16 FunDef: DataType IDENTIFIER '(' . ')' BlockStat
+   17 OpenPar: '(' .
+
+    ')'  shift, and go to state 37
+
+    $default  reduce using rule 17 (OpenPar)
+
+
+State 24
+
+   13 FunDec: DataType IDENTIFIER OpenPar . ParamList ClosePar
+   15 FunDef: DataType IDENTIFIER OpenPar . ParamList ClosePar BlockStat
+
+    CHAR   shift, and go to state 1
+    INT    shift, and go to state 2
+    VOID   shift, and go to state 3
+    FLOAT  shift, and go to state 4
+
+    ParamList  go to state 38
+    DataType   go to state 39
+
+
+State 25
+
+   47 Term: INTEGER_CONSTANT .
+
+    $default  reduce using rule 47 (Term)
+
+
+State 26
+
+   49 Term: STRING_CONSTANT .
+
+    $default  reduce using rule 49 (Term)
+
+
+State 27
+
+   43 Term: INCREMENT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 40
+
+
+State 28
+
+   44 Term: DECREMENT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 41
+
+
+State 29
+
+   42 Term: IDENTIFIER .
+   45     | IDENTIFIER . INCREMENT
+   46     | IDENTIFIER . DECREMENT
+   48     | IDENTIFIER . '[' ConstExpr ']'
+   62 FunCall: IDENTIFIER . '(' ArgList ')'
+   63        | IDENTIFIER . '(' ')'
+
+    INCREMENT  shift, and go to state 42
+    DECREMENT  shift, and go to state 43
+    '['        shift, and go to state 44
+    '('        shift, and go to state 45
+
+    $default  reduce using rule 42 (Term)
+
+
+State 30
+
+   11 DecList: IDENTIFIER '=' Expr . ',' DecList
+   12        | IDENTIFIER '=' Expr .
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ','  shift, and go to state 53
+
+    $default  reduce using rule 12 (DecList)
+
+
+State 31
+
+   34 Expr: Term .
+
+    $default  reduce using rule 34 (Expr)
+
+
+State 32
+
+   50 Term: FunCall .
+
+    $default  reduce using rule 50 (Term)
+
+
+State 33
+
+    7 DecList: IDENTIFIER .
+    8        | IDENTIFIER . ',' DecList
+    9        | IDENTIFIER . '[' ConstExpr ']' ',' DecList
+   10        | IDENTIFIER . '[' ConstExpr ']'
+   11        | IDENTIFIER . '=' Expr ',' DecList
+   12        | IDENTIFIER . '=' Expr
+
+    '='  shift, and go to state 20
+    ','  shift, and go to state 21
+    '['  shift, and go to state 22
+
+    $default  reduce using rule 7 (DecList)
+
+
+State 34
+
+    8 DecList: IDENTIFIER ',' DecList .
+
+    $default  reduce using rule 8 (DecList)
+
+
+State 35
+
+   55 ConstExpr: INTEGER_CONSTANT .
+
+    $default  reduce using rule 55 (ConstExpr)
+
+
+State 36
+
+    9 DecList: IDENTIFIER '[' ConstExpr . ']' ',' DecList
+   10        | IDENTIFIER '[' ConstExpr . ']'
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   57          | ConstExpr . '-' ConstExpr
+   58          | ConstExpr . '/' ConstExpr
+   59          | ConstExpr . '*' ConstExpr
+   60          | ConstExpr . '%' ConstExpr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    '*'  shift, and go to state 57
+    '%'  shift, and go to state 58
+    ']'  shift, and go to state 59
+
+
+State 37
+
+   14 FunDec: DataType IDENTIFIER '(' ')' .
+   16 FunDef: DataType IDENTIFIER '(' ')' . BlockStat
+
+    '{'  shift, and go to state 60
+
+    $default  reduce using rule 14 (FunDec)
+
+    BlockStat  go to state 61
+
+
+State 38
+
+   13 FunDec: DataType IDENTIFIER OpenPar ParamList . ClosePar
+   15 FunDef: DataType IDENTIFIER OpenPar ParamList . ClosePar BlockStat
+
+    ')'  shift, and go to state 62
+
+    ClosePar  go to state 63
+
+
+State 39
+
+   19 ParamList: DataType . IDENTIFIER
+   20          | DataType . IDENTIFIER ',' ParamList
+
+    IDENTIFIER  shift, and go to state 64
+
+
+State 40
+
+   43 Term: INCREMENT IDENTIFIER .
+
+    $default  reduce using rule 43 (Term)
+
+
+State 41
+
+   44 Term: DECREMENT IDENTIFIER .
+
+    $default  reduce using rule 44 (Term)
+
+
+State 42
+
+   45 Term: IDENTIFIER INCREMENT .
+
+    $default  reduce using rule 45 (Term)
+
+
+State 43
+
+   46 Term: IDENTIFIER DECREMENT .
+
+    $default  reduce using rule 46 (Term)
+
+
+State 44
+
+   48 Term: IDENTIFIER '[' . ConstExpr ']'
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 65
+
+
+State 45
+
+   62 FunCall: IDENTIFIER '(' . ArgList ')'
+   63        | IDENTIFIER '(' . ')'
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+    ')'               shift, and go to state 66
+
+    Term     go to state 67
+    FunCall  go to state 32
+    ArgList  go to state 68
+
+
+State 46
+
+   40 Expr: Expr '<' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 69
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 47
+
+   41 Expr: Expr '>' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 70
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 48
+
+   35 Expr: Expr '+' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 71
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 49
+
+   36 Expr: Expr '-' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 72
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 50
+
+   37 Expr: Expr '/' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 73
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 51
+
+   38 Expr: Expr '*' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 74
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 52
+
+   39 Expr: Expr '%' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 75
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 53
+
+   11 DecList: IDENTIFIER '=' Expr ',' . DecList
+
+    IDENTIFIER  shift, and go to state 33
+
+    DecList  go to state 76
+
+
+State 54
+
+   56 ConstExpr: ConstExpr '+' . ConstExpr
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 77
+
+
+State 55
+
+   57 ConstExpr: ConstExpr '-' . ConstExpr
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 78
+
+
+State 56
+
+   58 ConstExpr: ConstExpr '/' . ConstExpr
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 79
+
+
+State 57
+
+   59 ConstExpr: ConstExpr '*' . ConstExpr
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 80
+
+
+State 58
+
+   60 ConstExpr: ConstExpr '%' . ConstExpr
+
+    INTEGER_CONSTANT  shift, and go to state 35
+
+    ConstExpr  go to state 81
+
+
+State 59
+
+    9 DecList: IDENTIFIER '[' ConstExpr ']' . ',' DecList
+   10        | IDENTIFIER '[' ConstExpr ']' .
+
+    ','  shift, and go to state 82
+
+    $default  reduce using rule 10 (DecList)
+
+
+State 60
+
+   22 BlockStat: '{' . $@1 StatList '}'
+
+    $default  reduce using rule 21 ($@1)
+
+    $@1  go to state 83
+
+
+State 61
+
+   16 FunDef: DataType IDENTIFIER '(' ')' BlockStat .
+
+    $default  reduce using rule 16 (FunDef)
+
+
+State 62
+
+   18 ClosePar: ')' .
+
+    $default  reduce using rule 18 (ClosePar)
+
+
+State 63
+
+   13 FunDec: DataType IDENTIFIER OpenPar ParamList ClosePar .
+   15 FunDef: DataType IDENTIFIER OpenPar ParamList ClosePar . BlockStat
+
+    '{'  shift, and go to state 60
+
+    $default  reduce using rule 13 (FunDec)
+
+    BlockStat  go to state 84
+
+
+State 64
+
+   19 ParamList: DataType IDENTIFIER .
+   20          | DataType IDENTIFIER . ',' ParamList
+
+    ','  shift, and go to state 85
+
+    $default  reduce using rule 19 (ParamList)
+
+
+State 65
+
+   48 Term: IDENTIFIER '[' ConstExpr . ']'
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   57          | ConstExpr . '-' ConstExpr
+   58          | ConstExpr . '/' ConstExpr
+   59          | ConstExpr . '*' ConstExpr
+   60          | ConstExpr . '%' ConstExpr
+
+    '+'  shift, and go to state 54
+    '-'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    '*'  shift, and go to state 57
+    '%'  shift, and go to state 58
+    ']'  shift, and go to state 86
+
+
+State 66
+
+   63 FunCall: IDENTIFIER '(' ')' .
+
+    $default  reduce using rule 63 (FunCall)
+
+
+State 67
+
+   64 ArgList: Term . ',' ArgList
+   65        | Term .
+
+    ','  shift, and go to state 87
+
+    $default  reduce using rule 65 (ArgList)
+
+
+State 68
+
+   62 FunCall: IDENTIFIER '(' ArgList . ')'
+
+    ')'  shift, and go to state 88
+
+
+State 69
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   40     | Expr '<' Expr .
+   41     | Expr . '>' Expr
+
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+
+    $default  reduce using rule 40 (Expr)
+
+
+State 70
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   41     | Expr '>' Expr .
+
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+
+    $default  reduce using rule 41 (Expr)
+
+
+State 71
+
+   35 Expr: Expr . '+' Expr
+   35     | Expr '+' Expr .
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+
+    $default  reduce using rule 35 (Expr)
+
+
+State 72
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   36     | Expr '-' Expr .
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+
+    $default  reduce using rule 36 (Expr)
+
+
+State 73
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   37     | Expr '/' Expr .
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    $default  reduce using rule 37 (Expr)
+
+
+State 74
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   38     | Expr '*' Expr .
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    $default  reduce using rule 38 (Expr)
+
+
+State 75
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   39     | Expr '%' Expr .
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    $default  reduce using rule 39 (Expr)
+
+
+State 76
+
+   11 DecList: IDENTIFIER '=' Expr ',' DecList .
+
+    $default  reduce using rule 11 (DecList)
+
+
+State 77
+
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   56          | ConstExpr '+' ConstExpr .
+   57          | ConstExpr . '-' ConstExpr
+   58          | ConstExpr . '/' ConstExpr
+   59          | ConstExpr . '*' ConstExpr
+   60          | ConstExpr . '%' ConstExpr
+
+    '/'  shift, and go to state 56
+    '*'  shift, and go to state 57
+    '%'  shift, and go to state 58
+
+    $default  reduce using rule 56 (ConstExpr)
+
+
+State 78
+
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   57          | ConstExpr . '-' ConstExpr
+   57          | ConstExpr '-' ConstExpr .
+   58          | ConstExpr . '/' ConstExpr
+   59          | ConstExpr . '*' ConstExpr
+   60          | ConstExpr . '%' ConstExpr
+
+    '/'  shift, and go to state 56
+    '*'  shift, and go to state 57
+    '%'  shift, and go to state 58
+
+    $default  reduce using rule 57 (ConstExpr)
+
+
+State 79
+
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   57          | ConstExpr . '-' ConstExpr
+   58          | ConstExpr . '/' ConstExpr
+   58          | ConstExpr '/' ConstExpr .
+   59          | ConstExpr . '*' ConstExpr
+   60          | ConstExpr . '%' ConstExpr
+
+    $default  reduce using rule 58 (ConstExpr)
+
+
+State 80
+
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   57          | ConstExpr . '-' ConstExpr
+   58          | ConstExpr . '/' ConstExpr
+   59          | ConstExpr . '*' ConstExpr
+   59          | ConstExpr '*' ConstExpr .
+   60          | ConstExpr . '%' ConstExpr
+
+    $default  reduce using rule 59 (ConstExpr)
+
+
+State 81
+
+   56 ConstExpr: ConstExpr . '+' ConstExpr
+   57          | ConstExpr . '-' ConstExpr
+   58          | ConstExpr . '/' ConstExpr
+   59          | ConstExpr . '*' ConstExpr
+   60          | ConstExpr . '%' ConstExpr
+   60          | ConstExpr '%' ConstExpr .
+
+    $default  reduce using rule 60 (ConstExpr)
+
+
+State 82
+
+    9 DecList: IDENTIFIER '[' ConstExpr ']' ',' . DecList
+
+    IDENTIFIER  shift, and go to state 33
+
+    DecList  go to state 89
+
+
+State 83
+
+   22 BlockStat: '{' $@1 . StatList '}'
+
+    WHILE             shift, and go to state 90
+    FOR               shift, and go to state 91
+    IF                shift, and go to state 92
+    RETURN            shift, and go to state 93
+    CHAR              shift, and go to state 1
+    INT               shift, and go to state 2
+    VOID              shift, and go to state 3
+    FLOAT             shift, and go to state 4
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+    ';'               shift, and go to state 94
+    '{'               shift, and go to state 60
+
+    $default  reduce using rule 25 (StatList)
+
+    VarDec      go to state 95
+    BlockStat   go to state 96
+    StatList    go to state 97
+    SingleStat  go to state 98
+    Expr        go to state 99
+    Term        go to state 100
+    DataType    go to state 101
+    Assign      go to state 102
+    FunCall     go to state 32
+    IfStat      go to state 103
+    WhileStat   go to state 104
+    ForStat     go to state 105
+
+
+State 84
+
+   15 FunDef: DataType IDENTIFIER OpenPar ParamList ClosePar BlockStat .
+
+    $default  reduce using rule 15 (FunDef)
+
+
+State 85
+
+   20 ParamList: DataType IDENTIFIER ',' . ParamList
+
+    CHAR   shift, and go to state 1
+    INT    shift, and go to state 2
+    VOID   shift, and go to state 3
+    FLOAT  shift, and go to state 4
+
+    ParamList  go to state 106
+    DataType   go to state 39
+
+
+State 86
+
+   48 Term: IDENTIFIER '[' ConstExpr ']' .
+
+    $default  reduce using rule 48 (Term)
+
+
+State 87
+
+   64 ArgList: Term ',' . ArgList
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Term     go to state 67
+    FunCall  go to state 32
+    ArgList  go to state 107
+
+
+State 88
+
+   62 FunCall: IDENTIFIER '(' ArgList ')' .
+
+    $default  reduce using rule 62 (FunCall)
+
+
+State 89
+
+    9 DecList: IDENTIFIER '[' ConstExpr ']' ',' DecList .
+
+    $default  reduce using rule 9 (DecList)
+
+
+State 90
+
+   69 WhileStat: WHILE . '(' Expr ')' BlockStat
+
+    '('  shift, and go to state 108
+
+
+State 91
+
+   70 ForStat: FOR . '(' VarDec ';' Expr ';' Expr ')' BlockStat
+   71        | FOR . '(' Expr ';' Expr ';' Expr ')' BlockStat
+
+    '('  shift, and go to state 109
+
+
+State 92
+
+   66 IfStat: IF . '(' Expr ')' BlockStat
+   67       | IF . '(' Expr ')' SingleStat
+   68       | IF . '(' Expr ')' BlockStat ELSE BlockStat
+
+    '('  shift, and go to state 110
+
+
+State 93
+
+   28 SingleStat: RETURN . ';'
+
+    ';'  shift, and go to state 111
+
+
+State 94
+
+   26 SingleStat: ';' .
+
+    $default  reduce using rule 26 (SingleStat)
+
+
+State 95
+
+   27 SingleStat: VarDec . ';'
+
+    ';'  shift, and go to state 112
+
+
+State 96
+
+   24 StatList: BlockStat . StatList
+
+    WHILE             shift, and go to state 90
+    FOR               shift, and go to state 91
+    IF                shift, and go to state 92
+    RETURN            shift, and go to state 93
+    CHAR              shift, and go to state 1
+    INT               shift, and go to state 2
+    VOID              shift, and go to state 3
+    FLOAT             shift, and go to state 4
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+    ';'               shift, and go to state 94
+    '{'               shift, and go to state 60
+
+    $default  reduce using rule 25 (StatList)
+
+    VarDec      go to state 95
+    BlockStat   go to state 96
+    StatList    go to state 113
+    SingleStat  go to state 98
+    Expr        go to state 99
+    Term        go to state 100
+    DataType    go to state 101
+    Assign      go to state 102
+    FunCall     go to state 32
+    IfStat      go to state 103
+    WhileStat   go to state 104
+    ForStat     go to state 105
+
+
+State 97
+
+   22 BlockStat: '{' $@1 StatList . '}'
+
+    '}'  shift, and go to state 114
+
+
+State 98
+
+   23 StatList: SingleStat . StatList
+
+    WHILE             shift, and go to state 90
+    FOR               shift, and go to state 91
+    IF                shift, and go to state 92
+    RETURN            shift, and go to state 93
+    CHAR              shift, and go to state 1
+    INT               shift, and go to state 2
+    VOID              shift, and go to state 3
+    FLOAT             shift, and go to state 4
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+    ';'               shift, and go to state 94
+    '{'               shift, and go to state 60
+
+    $default  reduce using rule 25 (StatList)
+
+    VarDec      go to state 95
+    BlockStat   go to state 96
+    StatList    go to state 115
+    SingleStat  go to state 98
+    Expr        go to state 99
+    Term        go to state 100
+    DataType    go to state 101
+    Assign      go to state 102
+    FunCall     go to state 32
+    IfStat      go to state 103
+    WhileStat   go to state 104
+    ForStat     go to state 105
+
+
+State 99
+
+   29 SingleStat: Expr . ';'
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ';'  shift, and go to state 116
+
+
+State 100
+
+   34 Expr: Term .
+   61 Assign: Term . '=' Expr
+
+    '='  shift, and go to state 117
+
+    $default  reduce using rule 34 (Expr)
+
+
+State 101
+
+    6 VarDec: DataType . DecList
+
+    IDENTIFIER  shift, and go to state 33
+
+    DecList  go to state 17
+
+
+State 102
+
+   30 SingleStat: Assign . ';'
+
+    ';'  shift, and go to state 118
+
+
+State 103
+
+   31 SingleStat: IfStat .
+
+    $default  reduce using rule 31 (SingleStat)
+
+
+State 104
+
+   33 SingleStat: WhileStat .
+
+    $default  reduce using rule 33 (SingleStat)
+
+
+State 105
+
+   32 SingleStat: ForStat .
+
+    $default  reduce using rule 32 (SingleStat)
+
+
+State 106
+
+   20 ParamList: DataType IDENTIFIER ',' ParamList .
+
+    $default  reduce using rule 20 (ParamList)
+
+
+State 107
+
+   64 ArgList: Term ',' ArgList .
+
+    $default  reduce using rule 64 (ArgList)
+
+
+State 108
+
+   69 WhileStat: WHILE '(' . Expr ')' BlockStat
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 119
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 109
+
+   70 ForStat: FOR '(' . VarDec ';' Expr ';' Expr ')' BlockStat
+   71        | FOR '(' . Expr ';' Expr ';' Expr ')' BlockStat
+
+    CHAR              shift, and go to state 1
+    INT               shift, and go to state 2
+    VOID              shift, and go to state 3
+    FLOAT             shift, and go to state 4
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    VarDec    go to state 120
+    Expr      go to state 121
+    Term      go to state 31
+    DataType  go to state 101
+    FunCall   go to state 32
+
+
+State 110
+
+   66 IfStat: IF '(' . Expr ')' BlockStat
+   67       | IF '(' . Expr ')' SingleStat
+   68       | IF '(' . Expr ')' BlockStat ELSE BlockStat
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 122
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 111
+
+   28 SingleStat: RETURN ';' .
+
+    $default  reduce using rule 28 (SingleStat)
+
+
+State 112
+
+   27 SingleStat: VarDec ';' .
+
+    $default  reduce using rule 27 (SingleStat)
+
+
+State 113
+
+   24 StatList: BlockStat StatList .
+
+    $default  reduce using rule 24 (StatList)
+
+
+State 114
+
+   22 BlockStat: '{' $@1 StatList '}' .
+
+    $default  reduce using rule 22 (BlockStat)
+
+
+State 115
+
+   23 StatList: SingleStat StatList .
+
+    $default  reduce using rule 23 (StatList)
+
+
+State 116
+
+   29 SingleStat: Expr ';' .
+
+    $default  reduce using rule 29 (SingleStat)
+
+
+State 117
+
+   61 Assign: Term '=' . Expr
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 123
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 118
+
+   30 SingleStat: Assign ';' .
+
+    $default  reduce using rule 30 (SingleStat)
+
+
+State 119
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   69 WhileStat: WHILE '(' Expr . ')' BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ')'  shift, and go to state 124
+
+
+State 120
+
+   70 ForStat: FOR '(' VarDec . ';' Expr ';' Expr ')' BlockStat
+
+    ';'  shift, and go to state 125
+
+
+State 121
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   71 ForStat: FOR '(' Expr . ';' Expr ';' Expr ')' BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ';'  shift, and go to state 126
+
+
+State 122
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   66 IfStat: IF '(' Expr . ')' BlockStat
+   67       | IF '(' Expr . ')' SingleStat
+   68       | IF '(' Expr . ')' BlockStat ELSE BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ')'  shift, and go to state 127
+
+
+State 123
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   61 Assign: Term '=' Expr .
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+
+    $default  reduce using rule 61 (Assign)
+
+
+State 124
+
+   69 WhileStat: WHILE '(' Expr ')' . BlockStat
+
+    '{'  shift, and go to state 60
+
+    BlockStat  go to state 128
+
+
+State 125
+
+   70 ForStat: FOR '(' VarDec ';' . Expr ';' Expr ')' BlockStat
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 129
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 126
+
+   71 ForStat: FOR '(' Expr ';' . Expr ';' Expr ')' BlockStat
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 130
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 127
+
+   66 IfStat: IF '(' Expr ')' . BlockStat
+   67       | IF '(' Expr ')' . SingleStat
+   68       | IF '(' Expr ')' . BlockStat ELSE BlockStat
+
+    WHILE             shift, and go to state 90
+    FOR               shift, and go to state 91
+    IF                shift, and go to state 92
+    RETURN            shift, and go to state 93
+    CHAR              shift, and go to state 1
+    INT               shift, and go to state 2
+    VOID              shift, and go to state 3
+    FLOAT             shift, and go to state 4
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+    ';'               shift, and go to state 94
+    '{'               shift, and go to state 60
+
+    VarDec      go to state 95
+    BlockStat   go to state 131
+    SingleStat  go to state 132
+    Expr        go to state 99
+    Term        go to state 100
+    DataType    go to state 101
+    Assign      go to state 102
+    FunCall     go to state 32
+    IfStat      go to state 103
+    WhileStat   go to state 104
+    ForStat     go to state 105
+
+
+State 128
+
+   69 WhileStat: WHILE '(' Expr ')' BlockStat .
+
+    $default  reduce using rule 69 (WhileStat)
+
+
+State 129
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   70 ForStat: FOR '(' VarDec ';' Expr . ';' Expr ')' BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ';'  shift, and go to state 133
+
+
+State 130
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   71 ForStat: FOR '(' Expr ';' Expr . ';' Expr ')' BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ';'  shift, and go to state 134
+
+
+State 131
+
+   66 IfStat: IF '(' Expr ')' BlockStat .
+   68       | IF '(' Expr ')' BlockStat . ELSE BlockStat
+
+    ELSE  shift, and go to state 135
+
+    $default  reduce using rule 66 (IfStat)
+
+
+State 132
+
+   67 IfStat: IF '(' Expr ')' SingleStat .
+
+    $default  reduce using rule 67 (IfStat)
+
+
+State 133
+
+   70 ForStat: FOR '(' VarDec ';' Expr ';' . Expr ')' BlockStat
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 136
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 134
+
+   71 ForStat: FOR '(' Expr ';' Expr ';' . Expr ')' BlockStat
+
+    INTEGER_CONSTANT  shift, and go to state 25
+    STRING_CONSTANT   shift, and go to state 26
+    INCREMENT         shift, and go to state 27
+    DECREMENT         shift, and go to state 28
+    IDENTIFIER        shift, and go to state 29
+
+    Expr     go to state 137
+    Term     go to state 31
+    FunCall  go to state 32
+
+
+State 135
+
+   68 IfStat: IF '(' Expr ')' BlockStat ELSE . BlockStat
+
+    '{'  shift, and go to state 60
+
+    BlockStat  go to state 138
+
+
+State 136
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   70 ForStat: FOR '(' VarDec ';' Expr ';' Expr . ')' BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ')'  shift, and go to state 139
+
+
+State 137
+
+   35 Expr: Expr . '+' Expr
+   36     | Expr . '-' Expr
+   37     | Expr . '/' Expr
+   38     | Expr . '*' Expr
+   39     | Expr . '%' Expr
+   40     | Expr . '<' Expr
+   41     | Expr . '>' Expr
+   71 ForStat: FOR '(' Expr ';' Expr ';' Expr . ')' BlockStat
+
+    '<'  shift, and go to state 46
+    '>'  shift, and go to state 47
+    '+'  shift, and go to state 48
+    '-'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '*'  shift, and go to state 51
+    '%'  shift, and go to state 52
+    ')'  shift, and go to state 140
+
+
+State 138
+
+   68 IfStat: IF '(' Expr ')' BlockStat ELSE BlockStat .
+
+    $default  reduce using rule 68 (IfStat)
+
+
+State 139
+
+   70 ForStat: FOR '(' VarDec ';' Expr ';' Expr ')' . BlockStat
+
+    '{'  shift, and go to state 60
+
+    BlockStat  go to state 141
+
+
+State 140
+
+   71 ForStat: FOR '(' Expr ';' Expr ';' Expr ')' . BlockStat
+
+    '{'  shift, and go to state 60
+
+    BlockStat  go to state 142
+
+
+State 141
+
+   70 ForStat: FOR '(' VarDec ';' Expr ';' Expr ')' BlockStat .
+
+    $default  reduce using rule 70 (ForStat)
+
+
+State 142
+
+   71 ForStat: FOR '(' Expr ';' Expr ';' Expr ')' BlockStat .
+
+    $default  reduce using rule 71 (ForStat)

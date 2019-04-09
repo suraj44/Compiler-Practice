@@ -51,7 +51,7 @@ FunDec
 	| DataType IDENTIFIER '(' ')'                        {insert($2, type, scope); setfunc(0);}
 
 FunDef
-	: DataType IDENTIFIER OpenParan ParamList CloseParan BlockStat { insert($2, type, scope); setfunc($4); } 
+	: DataType IDENTIFIER OpenParan ParamList CloseParan { insert($2, type, scope); setfunc($4); }  BlockStat 
 	| DataType IDENTIFIER '(' ')' BlockStat { insert($2, type, scope);setfunc(0);}
 
 OpenParan
