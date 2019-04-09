@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+
+void func(int d, char b);
+int printf(char s);
+
+int foo(int a) {
+	return a;
+
+}
+
+int main(int argc) {
+
+	int a = 4 / 3;
+	int arr[2 + 3];
+	func(arr[3 - 4],arr[(4*6)/4]);
+	int i;
+	if(a > 2) {
+		int i = 0;
+	} else {
+		int e =0;
+	}
+	while(i) {
+		i--;	
+	}
+	printf("hello");
+	for (i = 0 ; i < 10  ; i++) {
+		printf("hello");
+	}
+	return 0;
+}
