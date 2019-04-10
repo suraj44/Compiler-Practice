@@ -1543,7 +1543,7 @@ yyreduce:
       {
           case 7:
 #line 43 "parser.y" /* yacc.c:1646  */
-    {insert((yyvsp[0].str), type, scope);}
+    {redeclared((yyvsp[0].str), scope);insert((yyvsp[0].str), type, scope);}
 #line 1548 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1573,7 +1573,7 @@ yyreduce:
 
   case 19:
 #line 61 "parser.y" /* yacc.c:1646  */
-    {undeclared((yyvsp[0].str));}
+    {undeclared((yyvsp[0].str)); }
 #line 1578 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1621,7 +1621,7 @@ yyreduce:
 
   case 31:
 #line 82 "parser.y" /* yacc.c:1646  */
-    {scope--;}
+    {while(tos>=0 && stack[tos]->scope==scope)tos--;scope--;}
 #line 1626 "y.tab.c" /* yacc.c:1646  */
     break;
 

@@ -40,7 +40,7 @@ VarDec
 	: DataType VarList
 
 VarList
-	: IDENTIFIER {insert($1, type, scope);}
+	: IDENTIFIER {redeclared($1, scope);insert($1, type, scope);}
 	| IDENTIFIER ',' VarList {insert($1, type, scope);}
 	| IDENTIFIER '=' Expr {insert($1, type, scope);}
 	| IDENTIFIER '=' Expr ',' VarList {insert($1, type, scope);}
@@ -58,7 +58,7 @@ Expr
 	| Term
 
 Term
-	: IDENTIFIER {undeclared($1);}
+	: IDENTIFIER {undeclared($1); }
 	| INCREMENT IDENTIFIER {undeclared($2);}
 	| INT_CONSTANT {insertc($1);}
 	| FLOAT_CONSTANT {insertc($1);}
@@ -79,7 +79,7 @@ ParamList
 	| DataType IDENTIFIER ',' ParamList
 
 BlockStat
-	: '{' {scope++;} StatType '}' {scope--;}
+	: '{' {scope++;} StatType '}' {while(tos>=0 && stack[tos]->scope==scope)tos--;scope--;}
 
 StatType
 	: BlockStat StatType

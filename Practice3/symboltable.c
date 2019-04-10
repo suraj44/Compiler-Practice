@@ -75,6 +75,18 @@ void undeclared(const char *str) {
 	exit(1);
 }
 
+void redeclared(const char *str, int scope) {
+	int i = tos;
+	while(i >= 0 && stack[i]->scope ==scope) {
+		if(!strcmp(stack[i]->str, str)) {
+			printf("Line %3d: %s is redeclared\n", yylineno, str);
+			exit(1);
+		}
+		i--;
+	}
+	
+}
+
 void displayS() {
 	printf("-----------------------------------------------------\n");
 	printf("%15s %15s %15s\n", "Symbol", "Type" , "Scope");
